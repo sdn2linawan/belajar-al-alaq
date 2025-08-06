@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asyiknya Belajar Surah Al-Alaq</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Amiri+Quran&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Earthy Tones and Soft Greens -->
+    <!-- Application Structure Plan: Aplikasi ini dirancang sebagai pengalaman belajar satu halaman yang terstruktur secara tematis. Pengguna akan memulai dengan perkenalan umum tentang Surah Al-Alaq, kemudian menyelami makna setiap ayat dari 1-5 dengan penjelasan terjemahan dan pelajaran. Bagian akhir mencakup rangkuman pesan-pesan utama dan kuis interaktif untuk menguji pemahaman. Struktur ini dipilih untuk memandu siswa secara logis melalui materi inti surah, memastikan pemahaman mendalam tentang 'Iqra' dan signifikansinya. Navigasi atas memungkinkan lompatan cepat antar bagian, mendukung eksplorasi non-linear. -->
+    <!-- Visualization & Content Choices: 
+        - Pengenalan Surah: Disajikan dalam kartu informasi yang bersih menggunakan flexbox untuk tata letak yang rapi.
+        - Ayat-ayat Al-Alaq: Setiap ayat ditampilkan dalam blok terpisah dengan teks Arab (menggunakan font khusus Quran), transliterasi, terjemahan, dan penjelasan singkat. Ini memecah informasi menjadi bagian-bagian yang mudah dicerna dan fokus pada detail penting setiap ayat.
+        - Kuis Interaktif: Menggunakan format pilihan ganda dengan umpan balik instan (warna dan teks). Ini adalah cara efektif untuk menguji pemahaman tanpa memerlukan visualisasi data kompleks, dan sangat cocok untuk target audiens anak-anak.
+        - Ikon dan Visual: Menggunakan karakter Unicode (misalnya, 📖, ✨, ✅, ❌) untuk kesederhanaan, kecepatan muat, dan kompatibilitas, menghindari penggunaan gambar atau SVG. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF7; /* Soft cream */
+            color: #3F3C3A; /* Dark stone */
+        }
+        .arabic-text {
+            font-family: 'Amiri Quran', serif;
+            direction: rtl;
+            text-align: right;
+            line-height: 2.5;
+        }
+        .nav-link {
+            transition: color 0.3s, border-bottom-color 0.3s;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #10B981; /* Emerald green */
+            border-bottom-color: #10B981;
+        }
+        .card {
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .quiz-option {
+            transition: background-color 0.3s, transform 0.3s;
+            cursor: pointer;
+        }
+        .quiz-option:hover {
+            transform: scale(1.02);
+            background-color: #ECFDF5; /* Green-50 */
+        }
+        .correct {
+            background-color: #D1FAE5 !important; /* Green-100 */
+            border-color: #10B981; /* Green-500 */
+        }
+        .incorrect {
+            background-color: #FEE2E2 !important; /* Red-100 */
+            border-color: #EF4444; /* Red-500 */
+        }
+        .feedback {
+            transition: opacity 0.5s;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body class="bg-stone-50 text-stone-800">
+
+    <!-- Header & Navigasi -->
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <div class="text-xl font-bold text-emerald-700">
+                Belajar Al-Alaq
+            </div>
+            <div class="hidden md:flex space-x-8">
+                <a href="#home" class="nav-link border-b-2 border-transparent">Beranda</a>
+                <a href="#mengenal-surah" class="nav-link border-b-2 border-transparent">Mengenal Surah</a>
+                <a href="#ayat-ayat" class="nav-link border-b-2 border-transparent">Ayat-ayat</a>
+                <a href="#pesan-penting" class="nav-link border-b-2 border-transparent">Pesan Penting</a>
+                <a href="#kuis" class="nav-link border-b-2 border-transparent">Kuis</a>
+            </div>
+            <div class="md:hidden">
+                <button id="menu-btn" class="text-stone-600 focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </div>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden px-6 pb-3">
+            <a href="#home" class="block py-2 text-center nav-link">Beranda</a>
+            <a href="#mengenal-surah" class="block py-2 text-center nav-link">Mengenal Surah</a>
+            <a href="#ayat-ayat" class="block py-2 text-center nav-link">Ayat-ayat</a>
+            <a href="#pesan-penting" class="block py-2 text-center nav-link">Pesan Penting</a>
+            <a href="#kuis" class="block py-2 text-center nav-link">Kuis</a>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+        <!-- Bagian Beranda -->
+        <section id="home" class="text-center min-h-[60vh] flex flex-col justify-center items-center">
+            <h1 class="text-4xl md:text-6xl font-bold text-emerald-700 mb-4">✨ Asyiknya Belajar Surah Al-Alaq ✨</h1>
+            <p class="text-lg md:text-xl text-stone-600 mb-8 max-w-2xl">Assalamualaikum, teman-teman! Yuk, kita berpetualang seru mengenal Surah Al-Alaq, surah pertama yang turun kepada Nabi Muhammad ﷺ!</p>
+            <a href="#mengenal-surah" class="bg-emerald-600 text-white font-bold py-3 px-8 rounded-full hover:bg-emerald-700 transition-colors">
+                Mulai Belajar
+            </a>
+        </section>
+
+        <!-- Bagian Mengenal Surah -->
+        <section id="mengenal-surah" class="py-16 bg-white rounded-2xl p-8 my-8 shadow-md">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold mb-2">📖 Mengenal Surah Al-Alaq</h2>
+                <p class="text-stone-600 max-w-3xl mx-auto">Surah Al-Alaq adalah surah yang sangat istimewa. Ini adalah surah pertama yang Allah turunkan kepada Nabi Muhammad ﷺ. Yuk, kita kenali lebih dekat!</p>
+            </div>
+            <div class="flex flex-wrap justify-center gap-6">
+                <div class="card bg-lime-50 p-6 rounded-lg shadow-sm w-full md:w-1/3 lg:w-1/4 text-center border border-lime-200">
+                    <div class="text-4xl mb-3">🕋</div>
+                    <h3 class="font-semibold text-lg">Tempat Turun</h3>
+                    <p class="text-stone-700">Makkah (Makkiyah)</p>
+                </div>
+                <div class="card bg-lime-50 p-6 rounded-lg shadow-sm w-full md:w-1/3 lg:w-1/4 text-center border border-lime-200">
+                    <div class="text-4xl mb-3">🔢</div>
+                    <h3 class="font-semibold text-lg">Jumlah Ayat</h3>
+                    <p class="text-stone-700">19 Ayat</p>
+                </div>
+                <div class="card bg-lime-50 p-6 rounded-lg shadow-sm w-full md:w-1/3 lg:w-1/4 text-center border border-lime-200">
+                    <div class="text-4xl mb-3">🌟</div>
+                    <h3 class="font-semibold text-lg">Nama Lain</h3>
+                    <p class="text-stone-700">Surah Iqra'</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Bagian Ayat-ayat -->
+        <section id="ayat-ayat" class="py-16">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold mb-2">📚 Ayat-ayat Penting Surah Al-Alaq (1-5)</h2>
+                <p class="text-stone-600 max-w-3xl mx-auto">Mari kita baca dan pahami makna dari lima ayat pertama Surah Al-Alaq yang penuh hikmah ini. Ayat-ayat ini adalah perintah pertama dari Allah kepada Nabi Muhammad ﷺ.</p>
+            </div>
+
+            <div class="space-y-10">
+                <!-- Ayat 1 -->
+                <div class="bg-white p-8 rounded-lg shadow-lg border border-stone-200">
+                    <h3 class="text-xl font-bold mb-4 text-emerald-700">Ayat 1</h3>
+                    <p class="arabic-text text-3xl md:text-4xl mb-4">ٱقْرَأْ بِٱسْمِ رَبِّكَ ٱلَّذِى خَلَقَ</p>
+                    <p class="text-stone-700 mb-2">Transliterasi: Iqra' bismi Rabbikal-lazī khalaq</p>
+                    <p class="font-semibold text-lg text-emerald-600 mb-4">Terjemahan: Bacalah dengan (menyebut) nama Tuhanmu yang menciptakan,</p>
+                    <p class="text-stone-600">Pelajaran: Ayat ini adalah perintah pertama untuk membaca! Ini menunjukkan betapa pentingnya ilmu dan belajar dalam Islam. Kita harus membaca dan belajar dengan niat karena Allah.</p>
+                </div>
+
+                <!-- Ayat 2 -->
+                <div class="bg-white p-8 rounded-lg shadow-lg border border-stone-200">
+                    <h3 class="text-xl font-bold mb-4 text-emerald-700">Ayat 2</h3>
+                    <p class="arabic-text text-3xl md:text-4xl mb-4">خَلَقَ ٱلْإِنسَٰنَ مِنْ عَلَقٍ</p>
+                    <p class="text-stone-700 mb-2">Transliterasi: Khalaqal-insāna min ‘alaq</p>
+                    <p class="font-semibold text-lg text-emerald-600 mb-4">Terjemahan: Dia telah menciptakan manusia dari segumpal darah.</p>
+                    <p class="text-stone-600">Pelajaran: Allah menciptakan kita dari sesuatu yang kecil dan sederhana. Ini mengingatkan kita untuk selalu rendah hati dan bersyukur atas penciptaan-Nya yang luar biasa.</p>
+                </div>
+
+                <!-- Ayat 3 -->
+                <div class="bg-white p-8 rounded-lg shadow-lg border border-stone-200">
+                    <h3 class="text-xl font-bold mb-4 text-emerald-700">Ayat 3</h3>
+                    <p class="arabic-text text-3xl md:text-4xl mb-4">ٱقْرَأْ وَرَبُّكَ ٱلْأَكْرَمُ</p>
+                    <p class="text-stone-700 mb-2">Transliterasi: Iqra' wa Rabbukal-akram</p>
+                    <p class="font-semibold text-lg text-emerald-600 mb-4">Terjemahan: Bacalah, dan Tuhanmulah Yang Maha Mulia,</p>
+                    <p class="text-stone-600">Pelajaran: Perintah "Bacalah" diulang lagi! Ini menegaskan pentingnya membaca dan belajar. Allah Maha Mulia dan akan memudahkan kita dalam mencari ilmu.</p>
+                </div>
+
+                <!-- Ayat 4 -->
+                <div class="bg-white p-8 rounded-lg shadow-lg border border-stone-200">
+                    <h3 class="text-xl font-bold mb-4 text-emerald-700">Ayat 4</h3>
+                    <p class="arabic-text text-3xl md:text-4xl mb-4">ٱلَّذِى عَلَّمَ بِٱلْقَلَمِ</p>
+                    <p class="text-stone-700 mb-2">Transliterasi: Allazī ‘allama bil-qalam</p>
+                    <p class="font-semibold text-lg text-emerald-600 mb-4">Terjemahan: Yang mengajar (manusia) dengan pena.</p>
+                    <p class="text-stone-600">Pelajaran: Pena adalah alat untuk menulis dan mencatat ilmu. Ini menunjukkan bahwa Allah mengajarkan kita ilmu melalui tulisan dan membaca. Jadi, rajinlah menulis dan mencatat pelajaran!</p>
+                </div>
+
+                <!-- Ayat 5 -->
+                <div class="bg-white p-8 rounded-lg shadow-lg border border-stone-200">
+                    <h3 class="text-xl font-bold mb-4 text-emerald-700">Ayat 5</h3>
+                    <p class="arabic-text text-3xl md:text-4xl mb-4">عَلَّمَ ٱلْإِنسَٰنَ مَا لَمْ يَعْلَمْ</p>
+                    <p class="text-stone-700 mb-2">Transliterasi: ‘Allamal-insāna mā lam ya‘lam</p>
+                    <p class="font-semibold text-lg text-emerald-600 mb-4">Terjemahan: Dia mengajarkan manusia apa yang tidak diketahuinya.</p>
+                    <p class="text-stone-600">Pelajaran: Kita dilahirkan tanpa pengetahuan, tapi Allah Maha Pengasih yang mengajarkan kita banyak hal. Ini membuat kita semakin bersyukur dan semangat untuk terus belajar.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Bagian Pesan Penting -->
+        <section id="pesan-penting" class="py-16 bg-lime-50 rounded-2xl p-8 my-8 shadow-md">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold mb-2">🌟 Pesan Penting dari Surah Al-Alaq</h2>
+                <p class="text-stone-600 max-w-3xl mx-auto">Dari Surah Al-Alaq, kita bisa mengambil banyak pelajaran berharga. Ini dia beberapa di antaranya:</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+                <div class="card bg-white p-6 rounded-lg shadow-sm border border-stone-200">
+                    <h3 class="font-semibold text-lg mb-2">1. Pentingnya Membaca dan Belajar</h3>
+                    <p class="text-stone-700">Surah ini dimulai dengan perintah "Iqra'" (Bacalah). Ini menunjukkan bahwa mencari ilmu adalah hal yang sangat penting dalam Islam.</p>
+                </div>
+                <div class="card bg-white p-6 rounded-lg shadow-sm border border-stone-200">
+                    <h3 class="font-semibold text-lg mb-2">2. Bersyukur atas Penciptaan Allah</h3>
+                    <p class="text-stone-700">Allah menciptakan manusia dari segumpal darah. Ini mengingatkan kita akan kebesaran Allah dan harus selalu bersyukur.</p>
+                </div>
+                <div class="card bg-white p-6 rounded-lg shadow-sm border border-stone-200">
+                    <h3 class="font-semibold text-lg mb-2">3. Allah Maha Mulia dan Maha Mengajar</h3>
+                    <p class="text-stone-700">Allah adalah sumber segala ilmu. Dia mengajar kita bahkan dengan pena, alat untuk menulis dan menyebarkan ilmu.</p>
+                </div>
+                <div class="card bg-white p-6 rounded-lg shadow-sm border border-stone-200">
+                    <h3 class="font-semibold text-lg mb-2">4. Semangat Menuntut Ilmu</h3>
+                    <p class="text-stone-700">Karena Allah mengajarkan kita apa yang tidak kita ketahui, kita harus selalu semangat untuk terus belajar dan mencari ilmu.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Bagian Kuis -->
+        <section id="kuis" class="py-16">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold mb-2">❓ Uji Pemahamanmu!</h2>
+                <p class="text-stone-600 max-w-3xl mx-auto">Yuk, kita lihat seberapa jauh pemahamanmu tentang Surah Al-Alaq. Jawab pertanyaan-pertanyaan di bawah ini!</p>
+            </div>
+            <div class="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-lg border border-stone-200">
+                <div id="quiz-container" class="space-y-6">
+                    <!-- Pertanyaan Kuis akan dimasukkan oleh JS -->
+                </div>
+                <div id="quiz-result" class="text-center mt-8 font-bold text-xl hidden"></div>
+                <button id="submit-quiz" class="mt-8 bg-emerald-600 text-white font-bold py-3 px-6 rounded-full w-full hover:bg-emerald-700 transition-colors">
+                    Selesai Kuis
+                </button>
+            </div>
+        </section>
+        
+        <!-- Bagian Penutup -->
+        <section id="kesimpulan" class="text-center py-16 mt-8">
+            <h2 class="text-3xl font-bold text-emerald-700 mb-4">Alhamdulillah!</h2>
+            <p class="text-lg text-stone-600 max-w-2xl mx-auto mb-6">
+                Kamu sudah belajar banyak tentang Surah Al-Alaq. Ingatlah selalu pentingnya membaca dan mencari ilmu. Semoga ilmu yang kamu dapatkan berkah!
+            </p>
+            <p class="font-bold">Terus semangat belajar, ya! Wassalamualaikum!</p>
+        </section>
+
+    </main>
+
+    <footer class="bg-stone-800 text-white text-center py-4 mt-12">
+        <p>&copy; 2025 Media Pembelajaran Interaktif. Dibuat dengan ❤️ untuk Pendidikan.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Data Kuis
+            const quizData = [
+                {
+                    question: 'Apa perintah pertama yang Allah berikan kepada Nabi Muhammad ﷺ dalam Surah Al-Alaq?',
+                    options: ['Salat', 'Puasa', 'Membaca', 'Berzakat'],
+                    answer: 'Membaca',
+                    feedback: 'Benar! Perintah pertama adalah "Iqra\'" yang berarti Bacalah.'
+                },
+                {
+                    question: 'Dari apakah Allah menciptakan manusia menurut Surah Al-Alaq?',
+                    options: ['Tanah', 'Cahaya', 'Segumpal darah', 'Air'],
+                    answer: 'Segumpal darah',
+                    feedback: 'Tepat! Manusia diciptakan dari segumpal darah.'
+                },
+                {
+                    question: 'Apa alat yang disebutkan Allah sebagai pengajar manusia dalam Surah Al-Alaq?',
+                    options: ['Pedang', 'Pena', 'Buku', 'Lisan'],
+                    answer: 'Pena',
+                    feedback: 'Pena adalah alat penting untuk mencatat dan menyebarkan ilmu.'
+                }
+            ];
+
+            const quizContainer = document.getElementById('quiz-container');
+            const submitQuizBtn = document.getElementById('submit-quiz');
+            const quizResult = document.getElementById('quiz-result');
+            let userAnswers = {};
+
+            function renderQuiz() {
+                quizData.forEach((q, qIndex) => {
+                    const questionDiv = document.createElement('div');
+                    questionDiv.className = 'bg-stone-50 p-6 rounded-lg shadow-inner border border-stone-200';
+                    questionDiv.innerHTML = `
+                        <p class="font-semibold mb-3">${qIndex + 1}. ${q.question}</p>
+                        <div class="options space-y-2">
+                            ${q.options.map((option, oIndex) => `
+                                <div class="quiz-option p-3 rounded-md border border-stone-300" data-question-index="${qIndex}" data-option="${option}">
+                                    ${option}
+                                    <span class="feedback ml-2 text-sm font-medium opacity-0"></span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                    quizContainer.appendChild(questionDiv);
+                });
+
+                document.querySelectorAll('.quiz-option').forEach(optionDiv => {
+                    optionDiv.addEventListener('click', function() {
+                        const qIndex = this.dataset.questionIndex;
+                        const selectedOption = this.dataset.option;
+                        
+                        // Reset previous selection for this question
+                        document.querySelectorAll(`.quiz-option[data-question-index="${qIndex}"]`).forEach(opt => {
+                            opt.classList.remove('correct', 'incorrect');
+                            opt.querySelector('.feedback').classList.add('opacity-0');
+                            opt.querySelector('.feedback').textContent = '';
+                        });
+
+                        userAnswers[qIndex] = selectedOption;
+                        
+                        const isCorrect = selectedOption === quizData[qIndex].answer;
+                        const feedbackEl = this.querySelector('.feedback');
+                        
+                        if (isCorrect) {
+                            this.classList.add('correct');
+                            feedbackEl.textContent = '✅ ' + quizData[qIndex].feedback;
+                        } else {
+                            this.classList.add('incorrect');
+                            feedbackEl.textContent = '❌ Jawaban salah. ' + quizData[qIndex].feedback;
+                        }
+                        feedbackEl.classList.remove('opacity-0');
+                    });
+                });
+            }
+
+            submitQuizBtn.addEventListener('click', function() {
+                let score = 0;
+                let allAnswered = true;
+                quizData.forEach((q, qIndex) => {
+                    if (userAnswers[qIndex] === undefined) {
+                        allAnswered = false;
+                    }
+                    if (userAnswers[qIndex] === q.answer) {
+                        score++;
+                    }
+                });
+
+                if (!allAnswered) {
+                    quizResult.classList.remove('hidden');
+                    quizResult.textContent = 'Silakan jawab semua pertanyaan terlebih dahulu!';
+                    quizResult.classList.remove('text-emerald-600', 'text-red-600');
+                    quizResult.classList.add('text-amber-600');
+                    return;
+                }
+
+                quizResult.classList.remove('hidden');
+                if (score === quizData.length) {
+                    quizResult.textContent = `Hebat! Kamu menjawab benar semua (${score} dari ${quizData.length})! ✨`;
+                    quizResult.classList.remove('text-red-600', 'text-amber-600');
+                    quizResult.classList.add('text-emerald-600');
+                } else {
+                    quizResult.textContent = `Kerja bagus! Kamu benar ${score} dari ${quizData.length}. Terus belajar ya!`;
+                    quizResult.classList.remove('text-emerald-600', 'text-amber-600');
+                    quizResult.classList.add('text-red-600');
+                }
+            });
+
+            renderQuiz();
+
+            // Mobile Menu Toggle
+            const menuBtn = document.getElementById('menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            menuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            // Close mobile menu on link click
+            document.querySelectorAll('#mobile-menu a').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.add('hidden');
+                });
+            });
+
+            // Active Nav Link on Scroll
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('header nav a');
+
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= sectionTop - 100) { // Adjusted offset for sticky header
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').includes(current)) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
